@@ -1,24 +1,26 @@
-class ListsController < ApplicationController
-  before_action :set_list, only: [:show, :edit, :update, :destroy]
+require 'open-uri'
+require 'json'
 
+class ListsController < ApplicationController
+  before_action :set_list, only: [:show, :update]
+
+  # GET /lists
   def index
     @lists = List.all
   end
 
+  # GET /lists/1
   def show
-    @list = List.find(params[:id])
     @bookmark = Bookmark.new
     @movies = fetch_movies_from_api
   end
 
+  # GET /lists/new
   def new
     @list = List.new
   end
 
-  def edit
-    @list = List.find(params[:id])
-  end
-
+  # POST /lists
   def create
     @list = List.new(list_params)
 
@@ -30,7 +32,6 @@ class ListsController < ApplicationController
   end
 
   def update
-    @list = List.find(params[:id])
     if @list.update(list_params)
       redirect_to @list, notice: 'List was successfully updated.'
     else
@@ -38,28 +39,18 @@ class ListsController < ApplicationController
     end
   end
 
-  def destroy
-    @list.destroy
-    redirect_to lists_url, notice: 'List was successfully destroyed.'
-  end
-
   private
+    def set_list
+      @list = List.find(params[:id]) if params[:id].present?
+    end
 
-  def set_list
-    @list = List.find(params[:id])
-  end
+    def list_params
+      params.require(:list).permit(:name)
+    end
 
-  def fetch_movies_from_api
-    url = "https://tmdb.lewagon.com/movie/top_rated"
-    movies_serialized = URI.open(url).read
-    movies_data = JSON.parse(movies_serialized)['results']
-    movies_data || []
-  rescue StandardError => e
-    puts "Error fetching movies: #{e.message}"
-    []
-  end
-
-  def list_params
-    params.require(:list).permit(:name)
-  end
+    def fetch_movies_from_api
+      url = 'https://tmdb.lewagon.com/movie/top_rated'
+      response = URI.open(url).read
+      JSON.parse(response)['results']
+    end
 end
