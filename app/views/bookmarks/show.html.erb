@@ -1,0 +1,12 @@
+<h1><%= @list.name %></h1>
+
+<h2>Bookmarks</h2>
+<% @list.bookmarks.each do |bookmark| %>
+  <p>
+    <%= bookmark.movie_id %> - <%= bookmark.comment %>
+    <%= link_to 'Destroy', [bookmark.list, bookmark], method: :delete, data: { confirm: 'Are you sure?' } %>
+  </p>
+<% end %>
+
+<h2>Add a new bookmark</h2>
+<%= render 'bookmarks/form', list: @list, bookmark: @bookmark %>

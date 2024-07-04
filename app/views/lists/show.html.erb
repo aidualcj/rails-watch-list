@@ -1,0 +1,7 @@
+<h1><%= @list.name %></h1>
+
+<% @list.bookmarks.each do |bookmark| %>
+  <p><%= bookmark.comment %></p>
+<% end %>
+
+<%= render 'bookmarks/form', list: @list, bookmark: @bookmark %>
