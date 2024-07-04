@@ -1,38 +1,37 @@
-require 'open-uri'
-require 'json'
-
 class BookmarksController < ApplicationController
-  before_action :set_list
+  before_action :set_bookmarks, only: [:destroy]
+  before_action :set_lists, only: [:new, :create]
+
+  def new
+    @bookmark = Bookmark.new
+    @movies = Movie.all
+  end
 
   def create
-    @bookmark = @list.bookmarks.new(bookmark_params)
+    @bookmark = Bookmark.new(bookmark_params)
+    @bookmark.list = @list
     if @bookmark.save
-      redirect_to @list, notice: 'Bookmark was successfully created.'
+      redirect_to list_path(@list)
     else
-      @movies = fetch_movies_from_api
-      render 'lists/show'
+      render :new, status: :unprocessable_entity
     end
   end
 
   def destroy
-    @bookmark = @list.bookmarks.find(params[:id])
     @bookmark.destroy
-    redirect_to @list, notice: 'Bookmark was successfully destroyed.'
+    redirect_to list_bookmarks_path
   end
 
   private
+  def set_bookmarks
+    @bookmark = Bookmark.find(params[:id])
+  end
 
-  def set_list
+  def set_lists
     @list = List.find(params[:list_id])
   end
 
   def bookmark_params
-    params.require(:bookmark).permit(:movie_id, :comment)
-  end
-
-  def fetch_movies_from_api
-    url = 'https://api.themoviedb.org/3/movie/top_rated?api_key=YOUR_API_KEY'
-    response = URI.open(url).read
-    JSON.parse(response)['results']
+    params.require(:bookmark).permit(:comment, :movie_id, :list_id)
   end
 end

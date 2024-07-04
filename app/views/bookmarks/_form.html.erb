@@ -1,9 +1,9 @@
-<%= form_with(model: [list, @bookmark], local: true) do |form| %>
-  <% if @bookmark.errors.any? %>
+<%= form_with(model: [list, bookmark], local: true) do |form| %>
+  <% if bookmark.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@bookmark.errors.count, "error") %> prohibited this bookmark from being saved:</h2>
+      <h2><%= pluralize(bookmark.errors.count, "error") %> prohibited this bookmark from being saved:</h2>
       <ul>
-        <% @bookmark.errors.full_messages.each do |message| %>
+        <% bookmark.errors.full_messages.each do |message| %>
           <li><%= message %></li>
         <% end %>
       </ul>
@@ -11,13 +11,13 @@
   <% end %>
 
   <div class="field">
-    <%= form.label :movie_id, 'Select a movie' %>
-    <%= form.select :movie_id, @movies.map { |m| [m['title'], m['id']] }, { include_blank: 'Please select' }, class: 'form-control' %>
+    <%= form.label :movie_id %>
+    <%= form.collection_select :movie_id, movies, :id, :title %>
   </div>
 
   <div class="field">
     <%= form.label :comment %>
-    <%= form.text_area :comment %>
+    <%= form.text_field :comment %>
   </div>
 
   <div class="actions">

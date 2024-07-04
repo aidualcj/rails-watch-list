@@ -1,21 +1,14 @@
 <h1><%= @list.name %></h1>
 
-<h2>Movies available to add:</h2>
+<h2>Bookmarks</h2>
 <ul>
-  <% @movies.each do |movie| %>
+  <% @list.bookmarks.each do |bookmark| %>
     <li>
-      <%= movie['title'] %>
-      <%= link_to 'Add to List', list_bookmarks_path(@list, { bookmark: { movie_id: movie['id'] } }), method: :post %>
+      <%= bookmark.movie.title %> - <%= bookmark.comment %>
+      <%= link_to 'Delete', list_bookmark_path(@list, bookmark), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>
     </li>
   <% end %>
 </ul>
 
-<h2>Movies in this list:</h2>
-<ul>
-  <% @list.movies.each do |movie| %>
-    <li><%= movie.title %></li>
-    <!-- Ajoutez d'autres détails du film que vous souhaitez afficher -->
-  <% end %>
-</ul>
-
-<%= render 'bookmarks/form', list: @list %>
+<%= link_to 'Add Bookmark', new_list_bookmark_path(@list) %>
+<%= link_to 'Back to Lists', lists_path %>
