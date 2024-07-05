@@ -1,31 +1,24 @@
 require 'json'
-require 'net/http'
-require 'uri'
+require 'rest-client'
+
+puts 'Fetching movies from API...'
+response = RestClient.get('https://tmdb.lewagon.com/movie/top_rated')
+repos = JSON.parse(response)['results']
+repos_id_ten = repos.first(20)
 
 puts 'Creating 20 movies...'
 
-url = URI("https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1")
-http = Net::HTTP.new(url.host, url.port)
-http.use_ssl = true
-
-request = Net::HTTP::Get.new(url)
-request["accept"] = 'application/json'
-request["Authorization"] = 'Bearer YOUR_ACCESS_TOKEN' # Remplacez YOUR_ACCESS_TOKEN par votre token d'accès
-
-response = http.request(request)
-repos = JSON.parse(response.body)['results']
-repos_id_ten = repos.first(20)
-
 repos_id_ten.each do |movie|
-  movie_detail = movie
+  movie_url = "https://tmdb.lewagon.com/movie/#{movie['id']}"
+  movie_response = RestClient.get(movie_url)
+  movie_detail = JSON.parse(movie_response)
 
-  movie = Movie.new(
+  Movie.create!(
     title: movie_detail['original_title'],
     overview: movie_detail['overview'],
     poster_url: "https://image.tmdb.org/t/p/w500#{movie_detail['poster_path']}",
     rating: movie_detail['vote_average']
   )
-  movie.save!
 end
 
 puts 'Finished!'
