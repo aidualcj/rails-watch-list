@@ -1,14 +1,34 @@
 <h1><%= @list.name %></h1>
 
-<h2>Bookmarks</h2>
-<ul>
-  <% @list.bookmarks.each do |bookmark| %>
-    <li>
-      <%= bookmark.movie.title %> - <%= bookmark.comment %>
-      <%= link_to 'Delete', list_bookmark_path(@list, bookmark), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>
-    </li>
+<h2>Add a movie to this list:</h2>
+<div class="row">
+  <% @movies.each do |movie| %>
+    <div class="col-md-4">
+      <div class="card mb-4">
+        <%= image_tag movie.poster_url, class: 'card-img-top' %>
+        <div class="card-body">
+          <h5 class="card-title"><%= movie.title %></h5>
+          <p class="card-text"><%= truncate(movie.overview, length: 100) %></p>
+          <p class="card-text"><small class="text-muted">Rating: <%= movie.rating %></small></p>
+          <%= link_to 'Add to List', list_bookmarks_path(@list, movie_id: movie.id), method: :post, class: 'btn btn-primary' %>
+        </div>
+      </div>
+    </div>
   <% end %>
-</ul>
+</div>
 
-<%= link_to 'Add Bookmark', new_list_bookmark_path(@list) %>
-<%= link_to 'Back to Lists', lists_path %>
+<h2>Movies in this list:</h2>
+<div class="row">
+  <% @bookmarked_movies.each do |movie| %>
+    <div class="col-md-4">
+      <div class="card mb-4">
+        <%= image_tag movie.poster_url, class: 'card-img-top' %>
+        <div class="card-body">
+          <h5 class="card-title"><%= movie.title %></h5>
+          <p class="card-text"><%= truncate(movie.overview, length: 100) %></p>
+          <p class="card-text"><small class="text-muted">Rating: <%= movie.rating %></small></p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

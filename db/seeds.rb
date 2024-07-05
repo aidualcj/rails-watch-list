@@ -1,16 +1,23 @@
 require 'json'
-require 'rest-client'
+require 'net/http'
+require 'uri'
 
 puts 'Creating 20 movies...'
 
-response = RestClient.get 'https://tmdb.lewagon.com/movie/top_rated'
+url = URI("https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1")
+http = Net::HTTP.new(url.host, url.port)
+http.use_ssl = true
+
+request = Net::HTTP::Get.new(url)
+request["accept"] = 'application/json'
+request["Authorization"] = 'Bearer YOUR_ACCESS_TOKEN' # Remplacez YOUR_ACCESS_TOKEN par votre token d'accès
+
+response = http.request(request)
 repos = JSON.parse(response.body)['results']
 repos_id_ten = repos.first(20)
 
 repos_id_ten.each do |movie|
-  movie_url = "https://tmdb.lewagon.com/movie/#{movie['id']}"
-  movie_response = RestClient.get(movie_url)
-  movie_detail = JSON.parse(movie_response.body)
+  movie_detail = movie
 
   movie = Movie.new(
     title: movie_detail['original_title'],

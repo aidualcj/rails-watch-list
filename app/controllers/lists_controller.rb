@@ -1,10 +1,6 @@
 class ListsController < ApplicationController
-  before_action :set_lists, only: [:show]
   def index
     @lists = List.all
-  end
-
-  def show
   end
 
   def new
@@ -12,20 +8,23 @@ class ListsController < ApplicationController
   end
 
   def create
-    @list = List.new(params_list)
+    @list = List.new(list_params)
     if @list.save
       redirect_to list_path(@list)
     else
-      render :new, status: :unprocessable_entity
+      render :new
     end
   end
 
-  private
-  def set_lists
+  def show
     @list = List.find(params[:id])
+    @movies = Movie.all
+    @bookmarked_movies = @list.movies
   end
 
-  def params_list
+  private
+
+  def list_params
     params.require(:list).permit(:name)
   end
 end
