@@ -1,62 +1,63 @@
-<!-- Navbar -->
-<div class="navbar navbar-expand-sm navbar-light navbar-lewagon">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">
-      <i class="fas fa-film"></i> <!-- Icône de clap de film -->
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-          <%= link_to 'My Lists', lists_path, class: 'nav-link' %>
-        </li>
-        <li class="nav-item">
-          <%= link_to 'Create a Movie List', new_list_path, class: 'nav-link' %>
-        </li>
-      </ul>
+<!-- app/views/lists/show.html.erb -->
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1 class="text-center mb-4"><%= @list.name %></h1>
     </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <%= link_to 'Back to Lists', lists_path, class: 'btn btn-secondary' %>
+    </div>
+  </div>
+
+  <!-- Display movies already added to the list -->
+  <h2>Movies in this list:</h2>
+  <div class="row" id="moviesContainer">
+    <% @list.bookmarks.each do |bookmark| %>
+      <div class="col-md-3 mb-4">
+        <div class="card">
+          <%= image_tag bookmark.movie.poster_url, class: 'card-img-top' %>
+          <div class="card-body">
+            <h5 class="card-title"><%= bookmark.movie.title %></h5>
+            <p class="card-text"><%= truncate(bookmark.movie.overview, length: 100) %></p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Add a movie button -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <button id="addMovieButton" class="btn btn-primary">Add a movie to This List</button>
+    </div>
+  </div>
+
+  <!-- Movie list container (hidden by default) -->
+  <div id="movieList" style="display: none; overflow-y: auto; max-height: 300px;">
+    <ul id="movieDropdown" class="list-group">
+      <% @movies.each do |movie| %>
+        <li class="list-group-item">
+          <div class="d-flex justify-content-between align-items-center">
+            <span><%= movie.title %></span>
+            <%= button_to "Add to List", list_bookmarks_path(@list, movie_id: movie.id), method: :post, class: 'btn btn-success', remote: true %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
   </div>
 </div>
 
+<!-- JavaScript to handle adding movies -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var addMovieButton = document.getElementById('addMovieButton');
+    var movieListContainer = document.getElementById('movieList');
 
-
-<h1><%= @list.name %></h1>
-
-<h2>Add a movie to this list:</h2>
-<div class="row">
-  <% @movies.each do |movie| %>
-    <div class="col-md-3 mb-4">
-      <div class="card h-100">
-        <%= image_tag movie.poster_url, class: 'card-img-top' %>
-        <div class="card-body">
-          <h5 class="card-title"><%= movie.title %></h5>
-          <p class="card-text"><%= truncate(movie.overview, length: 100) %></p>
-          <p class="card-text"><small class="text-muted">Rating: <%= movie.rating %></small></p>
-          <%= button_to 'Add to List', list_bookmarks_path(@list, movie_id: movie.id), method: :post, class: 'btn btn-primary' %>
-        </div>
-      </div>
-    </div>
-  <% end %>
-</div>
-
-
-<h2>Movies in this list:</h2>
-<div class="row">
-  <% @bookmarked_movies.each do |movie| %>
-    <div class="col-md-3 mb-4">
-      <div class="card h-100">
-        <%= image_tag movie.poster_url, class: 'card-img-top' %>
-        <div class="card-body">
-          <h5 class="card-title"><%= movie.title %></h5>
-          <p class="card-text"><%= truncate(movie.overview, length: 100) %></p>
-          <p class="card-text"><small class="text-muted">Rating: <%= movie.rating %></small></p>
-        </div>
-      </div>
-    </div>
-  <% end %>
-  <%= link_to 'Back to Lists', lists_path, class: 'btn btn-secondary' %>
-
-</div>
+    addMovieButton.addEventListener('click', function() {
+      movieListContainer.style.display = 'block'; // Show movie list container
+    });
+  });
+</script>

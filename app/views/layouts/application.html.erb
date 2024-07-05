@@ -1,16 +1,47 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>My Movie Lists</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<head>
+  <title>Your Application Name</title>
+  <!-- Include your stylesheets and meta tags here -->
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
 
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
-  </head>
+  <!-- Bootstrap CSS (example assuming you use Bootstrap) -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-  <body>
-    <%= yield %>
-  </body>
+  <!-- Font Awesome for icons (example assuming you use Font Awesome) -->
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar navbar-expand-sm navbar-light navbar-lewagon">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <i class="fas fa-film"></i> <!-- Icône de clap de film -->
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <%= link_to 'My Lists', lists_path, class: 'nav-link' %>
+          </li>
+          <li class="nav-item">
+            <%= link_to 'Create a Movie List', new_list_path, class: 'nav-link' %>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <%= yield %>
+
+  <!-- Include your JavaScript files here (if any) -->
+
+  <!-- Bootstrap JS (example assuming you use Bootstrap) -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
